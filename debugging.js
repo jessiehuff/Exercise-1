@@ -1,23 +1,35 @@
-function remoteMathService(cb) {
+async function remoteMathService(cb) {
     var one; 
     var two;
     // This variable declaration method can make the code easier to maintain down the road 
 
-    callOneService(function(err, num) {
+    await callOneService(function(err, num) {
         one = num;
     });
-    callTwoService(function(err, num) {
+    await callTwoService(function(err, num) {
         two = num;
     });
-    return cb(undefined, one + two);
+    
+     return new Promise(function (resolve){
+         resolve(cb(undefined, one + two))
+     })
 }
 
 function callOneService(cb) {
-    return cb(undefined, 1);   //should consider whether or not it's beneficial to use setTimeout 
+    return new Promise(function (resolve){
+        setTimeout(function(){
+            resolve(cb(undefined, 1));
+        }, 1000); 
+    }
+    )
 }
-    
+
 function callTwoService(cb) {
-    return cb(undefined, 2);
+    return new Promise(function (resolve){
+        setTimeout(function(){
+            resolve( cb(undefined, 2)); 
+        }, 1500);
+    })
 }
     
 remoteMathService(function(err, answer) {
